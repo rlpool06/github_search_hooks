@@ -1,45 +1,32 @@
-import React, { useState, useEffect, Fragment } from 'react';
+import React, { useState } from 'react';
 import ListComponent from './ListComponent';
 import NavBar from './NavBar';
 
-function GithubSearch () {
-    const [repos, setRepos] = useState([]);
+const GithubSearch = () => {
+    const [data, setData] = useState([]);
     const [userInput, setUserInput] = useState('');
-    const [apiMsg, setApiMsg] = useState('');
-    const [loading, setLoading] = useState(false)
+    const [loading, setLoading] = useState(false);
 
-    useEffect(() => {
-        document.title = 'Github Search App';
-        });
+    const URL = `https://api.github.com/users/${userInput}`;
 
-        const handleSearch = (e) => {
-            setUserInput(e.target.value)
-        }
+    const handleSearch = (e) => {
+        setUserInput(e.target.value)
+    }
 
-        const handleInput = (e) => {
-            setLoading({loading:true})
-            fetch(`https://api.github.com/users/${userInput}/repos`)
-                .then(res => res.json())
-                .then(data => {
-                    setLoading({loading:false})
-                    console.log('data', data)
-                })
-                if(!repos.length) {
-                    setApiMsg(apiMsg= 'This user has no repos')
-                } else {
-                    setRepos(repos)
-                    // setUserInput(userInput),
-                    setApiMsg(apiMsg= null)
-                }
-                
-        }
-
-        // const content = repos.map(repo => !repo.fork && <ListComponent key={repo.id} {...repo} />)
+    const handleSubmit = () => {
+        setLoading(true)
+        fetch(URL)
+        .then(res => res.json())
+        .then((data) => {
+            setData(data)
+            setLoading(false)
+            console.log(data);
+        })
+    }
 
     return (
         <div>
             <NavBar />
-
             <div className='search'>
                 <input
                     placeholder='Github user'
@@ -48,24 +35,14 @@ function GithubSearch () {
                     onChange={handleSearch}
                     value={userInput}
                 />
-                <button onClick={handleInput}>Search</button>
+                <button type="button" onClick={handleSubmit}>Search</button>
             </div>
-
-            {
-                <Fragment>
-                    {/* {loading ? <div><h2>...Loading</h2></div> : 
-                        apiMsg ? <div><h2>{apiMsg}</h2></div> :
+                    {loading ? <div><h1>...Loading</h1></div> :
                         (<div className='list-container'>
-                            {content}                        
+                            {data.map(person => <ListComponent key={person.id} {...person}/>
+                            )}
                         </div>)
-                    } */}
-
-                    {loading ? <div><h2>...Loading</h2></div> :
-                        <div className='list-container'>
-                            <ListComponent />
-                        </div>}
-                </Fragment>
-            }
+                    }
         </div>
 
     )
