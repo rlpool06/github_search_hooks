@@ -8,7 +8,9 @@ const ListComponent = ({person}) => {
         !person.id ? (null) : ( 
         <div className="border rounded-md py-3 px-5 shadow-lg">
             <h1 className="font-rubik text-4xl font-black italic">{person.login}</h1>
+            <span className="flex justify-center">
             <img src={person.avatar_url} alt='avatar' width="300" height='300' />
+            </span>
             <div className="mt-5">
                 <p className="text-2xl font-rubik">Followers: {person.followers}</p>
                 <p className="text-2xl font-rubik">Repos: {person.public_repos}</p>
